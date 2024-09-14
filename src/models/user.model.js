@@ -6,12 +6,15 @@ const userSchema = mongoose.Schema(
     username: {
       type: String,
       required: [true, "Please give a username"],
+      unique: true,
       min: [3, "Username should be altleast 3 characters long."],
+      trim: true,
     },
 
     email: {
       type: String,
       required: [true, "Please add your email."],
+      trim: true,
     },
 
     isEmailVerified: {
