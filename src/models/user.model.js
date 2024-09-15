@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { UserDetails } from "./userDetails.model.js";
 
 const userSchema = mongoose.Schema(
   {
@@ -15,6 +16,12 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add your email."],
       trim: true,
+    },
+
+    password: {
+      type: String,
+      required: [true, "Please provide password."],
+      min: [6, " Password should be atleast 6 characters long "],
     },
 
     isEmailVerified: {
@@ -37,11 +44,11 @@ const userSchema = mongoose.Schema(
   }
 );
 
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) next();
   try {
-    const salt = bcrypt.genSalt(12);
-    this.password = bcrypt.hash(this.password, salt);
+    const salt = await bcrypt.genSalt(12);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error);
