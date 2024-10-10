@@ -164,3 +164,28 @@ export const addUserDetails = async (req, res) => {
     });
   }
 };
+
+// GET USER DETAILS BY ID
+
+export const getUserDetailsById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user.userDetails) {
+      return res.status(401).json({
+        message: `UserDetails doesn't exist for the User: ${user.username}`,
+      });
+    } else {
+      const userDetails = await UserDetails.findById(user.userDetails);
+      res.status(200).json({
+        message: "Successfully fetched UserDetails by userId.",
+        data: userDetails,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message:
+        "Something went wrong on the server while fetching UserDetails by UserId.",
+      error: error.message,
+    });
+  }
+};
