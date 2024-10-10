@@ -3,6 +3,22 @@ import User from "../models/user.model.js";
 import mongoose from "mongoose";
 import uploadOnCloudinary from "../utils/uploadOnCloudinary.js";
 
+//GET ALL USERS
+export const getAllUsers = async (req, res) => {
+  try {
+    const allUsers = await User.find();
+    res.status(200).json({
+      message: "Successfull fetched all users",
+      data: allUsers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Somethin went wron while getting all users.",
+      error: error.message,
+    });
+  }
+};
+
 // ADDING USER DETAILS
 export const addUserDetails = async (req, res) => {
   const {
