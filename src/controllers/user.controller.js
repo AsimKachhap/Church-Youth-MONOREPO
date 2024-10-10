@@ -19,6 +19,22 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
+// GET USER BY ID
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json({
+      message: "Successfully fetched user by Id.",
+      data: user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong while getting user by Id.",
+      error: error.message,
+    });
+  }
+};
+
 // ADDING USER DETAILS
 export const addUserDetails = async (req, res) => {
   const {
