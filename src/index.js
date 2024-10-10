@@ -19,7 +19,9 @@ import userRoute from "./routes/user.route.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users/", userRoute);
-
+app.get("/", (req, res) => {
+  res.send("<h1>Welcome to Backend</h1>");
+});
 const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => {
   connectDB();
