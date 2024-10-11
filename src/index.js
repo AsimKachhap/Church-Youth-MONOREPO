@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import connectDB from "./utils/db.js";
 
@@ -11,6 +12,12 @@ app.use(express.json());
 app.use(cookieParser());
 dotenv.config();
 app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
 //ROUTES
 
