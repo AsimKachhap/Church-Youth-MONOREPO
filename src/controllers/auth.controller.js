@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { generateTokens } from "../helpers/generateTokens.helper.js";
 import { storeRefreshToken } from "../helpers/storeRefreshToken.helper.js";
 import { redis } from "../utils/redis.js";
+import jwt from "jsonwebtoken";
 
 // REGISTER A USER
 
@@ -89,5 +90,22 @@ export const login = async (req, res) => {
       .status(500)
       .json({ message: "Something went wrong.", error: error.message });
     console.log(error);
+  }
+};
+
+//LOGOUT
+export const logout = async (req, res) => {
+  try {
+    const refreshToken = req.cookies["refresh-token"];
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_TOKEN_SECRET
+    );
+    await redis.del(`refresh_token:${decoded.userId}`);
+    res.clearCookie("access-token");
+    res.clearCookie("refresh-token");
+    res.status(200).json({ message: "Logged out Successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
