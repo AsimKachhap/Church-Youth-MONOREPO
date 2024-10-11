@@ -13,7 +13,7 @@ export const getAllUsers = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: "Somethin went wron while getting all users.",
+      message: "Something went wrongg while getting all users.",
       error: error.message,
     });
   }
@@ -120,8 +120,6 @@ export const addUserDetails = async (req, res) => {
               new: true,
             }
           );
-
-          console.log(updatedUser);
         } catch (error) {
           await session.abortTransaction();
           session.endSession();
