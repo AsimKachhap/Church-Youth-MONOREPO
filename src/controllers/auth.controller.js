@@ -1,8 +1,9 @@
 import User from "../models/user.model.js";
 import { generateTokens } from "../helpers/generateTokens.helper.js";
+import { storeRefreshToken } from "../helpers/storeRefreshToken.helper.js";
 import { redis } from "../utils/redis.js";
 
-// REISTER A USER
+// REGISTER A USER
 
 export const registerUser = async (req, res) => {
   try {
@@ -52,5 +53,41 @@ export const registerUser = async (req, res) => {
       message: "Something went wrong at Server",
       error: error.message,
     });
+  }
+};
+
+//LOGIN
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+
+    if (user && (await user.comparePassword(password))) {
+      const { accessToken, refreshToken } = await generateTokens(user._id);
+      await storeRefreshToken(user._id, refreshToken);
+      //Set Cookies
+      res.cookie("access-token", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        samesite: "strict",
+        maxAge: 15 * 60 * 1000,
+      });
+
+      res.cookie("refresh-token", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        samesite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+      res.status(200).json({ message: "Logged in Successfully." });
+    } else {
+      res.status(401).json({ message: "Email or Password Incorrect." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Something went wrong.", error: error.message });
+    console.log(error);
   }
 };
