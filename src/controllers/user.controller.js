@@ -2,6 +2,7 @@ import { UserDetails } from "../models/userDetails.model.js";
 import User from "../models/user.model.js";
 import mongoose from "mongoose";
 import uploadOnCloudinary from "../utils/uploadOnCloudinary.js";
+import jwt from "jsonwebtoken";
 
 //GET ALL USERS
 export const getAllUsers = async (req, res) => {
@@ -30,6 +31,56 @@ export const getUserById = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Something went wrong while getting user by Id.",
+      error: error.message,
+    });
+  }
+};
+
+// GET MY PROFILE
+
+export const getMyProfile = async (req, res) => {
+  try {
+    const accessToken = req.cookies["access-token"];
+
+    if (!accessToken) {
+      return res.status(401).json({
+        message: "Access token missing. Please log in.",
+      });
+    }
+
+    jwt.verify(
+      accessToken,
+      process.env.JWT_ACCESS_TOKEN_SECRET,
+      async (err, decoded) => {
+        if (err) {
+          if (err.name === "TokenExpiredError") {
+            return res.status(401).json({
+              message: "Access token expired. Please refresh the token.",
+            });
+          }
+
+          return res.status(401).json({
+            message: "Invalid access token. Please log in again.",
+          });
+        }
+
+        const user = await User.findById(decoded.userId).select("-password");
+
+        if (!user) {
+          return res.status(404).json({
+            message: "User not found.",
+          });
+        }
+
+        res.status(200).json({
+          message: "Successfully fetched User Profile.",
+          data: user,
+        });
+      }
+    );
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong while fetching your profile.",
       error: error.message,
     });
   }
