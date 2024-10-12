@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
+    console.log("registerUser req: ", req);
     const { username, email, password } = req.body;
     const userExists = await User.findOne({ username });
     // This logic doesn't work with User.find() as it returns an empty array instead of null.
@@ -62,6 +63,8 @@ export const registerUser = async (req, res) => {
 //LOGIN
 
 export const login = async (req, res) => {
+  console.log("Login req: ", req);
+  console.log("login cookie:", req.cookies);
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
