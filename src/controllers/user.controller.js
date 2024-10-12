@@ -43,6 +43,7 @@ export const getMyProfile = async (req, res) => {
     const accessToken = req.cookies["access-token"];
 
     if (!accessToken) {
+      console.log("Access Token Missing");
       return res.status(401).json({
         message: "Access token missing. Please log in.",
       });
@@ -54,11 +55,12 @@ export const getMyProfile = async (req, res) => {
       async (err, decoded) => {
         if (err) {
           if (err.name === "TokenExpiredError") {
+            console.log("Token expired");
             return res.status(401).json({
               message: "Access token expired. Please refresh the token.",
             });
           }
-
+          console.log("Invalid Access Token");
           return res.status(401).json({
             message: "Invalid access token. Please log in again.",
           });
