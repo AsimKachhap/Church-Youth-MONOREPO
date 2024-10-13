@@ -8,7 +8,6 @@ import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
-    console.log("registerUser req: ", req.body);
     const { username, email, password } = req.body;
     const userExists = await User.findOne({ username });
     // This logic doesn't work with User.find() as it returns an empty array instead of null.
