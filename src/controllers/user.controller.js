@@ -40,6 +40,7 @@ export const getUserById = async (req, res) => {
 
 export const getMyProfile = async (req, res) => {
   try {
+    console.log("getMyProfile req:", req.cookies);
     const accessToken = req.cookies["access-token"];
 
     if (!accessToken) {
