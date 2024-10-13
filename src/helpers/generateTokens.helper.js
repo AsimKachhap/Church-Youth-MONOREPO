@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
 export const generateTokens = async (userId) => {
+  console.log("Generating Tokens ...");
   try {
     const accessToken = jwt.sign(
       { userId },
@@ -15,6 +16,7 @@ export const generateTokens = async (userId) => {
       }
     );
 
+    console.log("Generated Tokens: ", accessToken, refreshToken);
     return { accessToken, refreshToken };
   } catch (error) {
     throw error;
