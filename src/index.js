@@ -14,7 +14,10 @@ dotenv.config();
 app.use(morgan("dev"));
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "https://st-marys-church-youth.netlify.app/",
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
