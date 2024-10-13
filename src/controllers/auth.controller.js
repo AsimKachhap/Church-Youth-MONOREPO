@@ -65,9 +65,9 @@ export const registerUser = async (req, res) => {
 //LOGIN
 
 export const login = async (req, res) => {
-  console.log("Login req: ", req);
   console.log("Login cookie:", req.cookies["access-token"]);
   const { email, password } = req.body;
+  console.log("Email & Password:", email, password);
   try {
     const user = await User.findOne({ email });
 
