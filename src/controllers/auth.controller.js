@@ -66,6 +66,7 @@ export const registerUser = async (req, res) => {
 
 export const login = async (req, res) => {
   console.log("Login cookie:", req.cookies["access-token"]);
+  console.log("Full req body: ", req.body);
   const { email, password } = req.body;
   console.log("Email & Password:", email, password);
   try {
