@@ -8,7 +8,7 @@ import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
   try {
-    console.log("registerUser req: ", req);
+    console.log("registerUser req: ", req.body);
     const { username, email, password } = req.body;
     const userExists = await User.findOne({ username });
     // This logic doesn't work with User.find() as it returns an empty array instead of null.
@@ -17,6 +17,7 @@ export const registerUser = async (req, res) => {
       const { accessToken, refreshToken } = await generateTokens(user._id);
 
       //Set Cookies
+      console.log("Setting Access Token...");
       res.cookie("access-token", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -24,13 +25,15 @@ export const registerUser = async (req, res) => {
         maxAge: 15 * 60 * 1000,
       });
 
+      console.log("Set Access Token :", accessToken);
+      console.log("Setting Refresh Token...");
       res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         samesite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
-
+      console.log("Set Refresh Token :", refreshToken);
       // Set Refresh Token
       try {
         await redis.set(`refresh_token:${user._id}`, refreshToken, {
@@ -86,6 +89,7 @@ export const login = async (req, res) => {
         samesite: "strict",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
+      console.log("Loggin res: ", res);
       res.status(200).json({ message: "Logged in Successfully." });
     } else {
       res.status(401).json({ message: "Email or Password Incorrect." });
