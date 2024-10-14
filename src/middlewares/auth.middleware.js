@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 export const protectRoute = async (req, res, next) => {
   try {
     const accessToken = req.cookies["access-token"];
+    console.log("Req on potectRoute middleware:", req.cookies);
+    console.log("AccessToken : ", accessToken);
     try {
       const user = await jwt.verify(
         accessToken,

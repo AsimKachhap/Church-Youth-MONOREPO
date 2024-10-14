@@ -24,6 +24,11 @@ const userSchema = mongoose.Schema(
       min: [6, " Password should be atleast 6 characters long "],
     },
 
+    pofilePhoto: {
+      type: String,
+      default: "", // Later add a link to default profile photo
+    },
+
     isEmailVerified: {
       type: Boolean,
       default: false,
