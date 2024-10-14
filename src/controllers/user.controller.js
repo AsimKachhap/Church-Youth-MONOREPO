@@ -168,6 +168,8 @@ export const addUserDetails = async (req, res) => {
             req.params.id,
             {
               userDetails: userDetails[0]._id,
+              profilePhoto: photoUrl,
+              isDetailsCompelete: true,
             },
             {
               session,
