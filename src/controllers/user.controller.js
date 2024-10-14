@@ -92,6 +92,8 @@ export const getMyProfile = async (req, res) => {
 // ADDING USER DETAILS
 export const addUserDetails = async (req, res) => {
   console.log("Request Body at addUserDetails: ", req.body);
+
+  // Extract flat fields from req.body since FormData does not send nested objects
   const {
     firstName,
     middleName,
@@ -100,24 +102,18 @@ export const addUserDetails = async (req, res) => {
     age,
     gender,
     currentAddress,
-    highestQualification,
-    jobDetails,
-    parishInfo,
     churchContribution,
+    degree,
+    college,
+    passingYear,
+    jobTitle,
+    company,
+    location,
+    homeParish,
+    district,
+    state,
+    pin,
   } = req.body;
-
-  const degree = highestQualification.degree;
-  const college = highestQualification.college;
-  const passingYear = highestQualification.passingYear;
-
-  const jobTitle = jobDetails.jobTitle;
-  const company = jobDetails.company;
-  const location = jobDetails.location;
-
-  const homeParish = parishInfo.homeParish;
-  const district = parishInfo.district;
-  const state = parishInfo.state;
-  const pin = parishInfo.pin;
 
   const session = await mongoose.startSession(); // Start a session for transaction
   session.startTransaction();
@@ -125,6 +121,7 @@ export const addUserDetails = async (req, res) => {
   try {
     if (req.file) {
       const localFilePath = req.file.path;
+
       const uploadResult = await uploadOnCloudinary(localFilePath);
       const photoUrl = uploadResult.url;
 
@@ -139,7 +136,7 @@ export const addUserDetails = async (req, res) => {
               phoneNo,
               age: Number(age),
               gender,
-              photo: photoUrl,
+              photo: photoUrl, // Store the uploaded photo URL
               currentAddress,
               highestQualification: {
                 degree,
@@ -163,28 +160,20 @@ export const addUserDetails = async (req, res) => {
           { session } // Ensure this operation is part of the transaction
         );
 
-        //2. Update the User with new UserDetails
-        try {
-          const updatedUser = await User.findByIdAndUpdate(
-            req.params.id,
-            {
-              userDetails: userDetails[0]._id,
-              profilePhoto: photoUrl,
-              isDetailsCompelete: true,
-            },
-            {
-              session,
-              new: true,
-            }
-          );
-        } catch (error) {
-          await session.abortTransaction();
-          session.endSession();
+        // 2. Update the User with the new UserDetails reference
+        const updatedUser = await User.findByIdAndUpdate(
+          req.params.id,
+          {
+            userDetails: userDetails[0]._id,
+          },
+          {
+            session,
+            new: true,
+          }
+        );
 
-          res.status(400).json({
-            message:
-              "Something went wrong while updating User with UserDetails.",
-          });
+        if (!updatedUser) {
+          throw new Error("User not found");
         }
 
         // Commit the transaction after all operations succeed
