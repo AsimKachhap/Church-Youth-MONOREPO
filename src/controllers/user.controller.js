@@ -91,6 +91,7 @@ export const getMyProfile = async (req, res) => {
 
 // ADDING USER DETAILS
 export const addUserDetails = async (req, res) => {
+  console.log("Request Body at addUserDetails: ", req.body);
   const {
     firstName,
     middleName,
