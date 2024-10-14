@@ -20,7 +20,7 @@ export const registerUser = async (req, res) => {
       res.cookie("access-token", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        samesite: "None",
+        sameSite: "None",
         maxAge: 15 * 60 * 1000,
       });
 
@@ -29,7 +29,7 @@ export const registerUser = async (req, res) => {
       res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        samesite: "None",
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       console.log("Set Refresh Token :", refreshToken);
@@ -79,14 +79,14 @@ export const login = async (req, res) => {
       res.cookie("access-token", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        samesite: "None",
+        sameSite: "None",
         maxAge: 15 * 60 * 1000,
       });
 
       res.cookie("refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        samesite: "None",
+        sameSite: "None",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
       console.log("Loggin res: ", res);
@@ -145,7 +145,7 @@ export const refreshAccessToken = async (req, res) => {
           {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            samesite: "None",
+            sameSite: "None",
             maxAge: 15 * 60 * 1000,
           };
         res
