@@ -103,17 +103,40 @@ export const addUserDetails = async (req, res) => {
     gender,
     currentAddress,
     churchContribution,
-    degree,
-    college,
-    passingYear,
-    jobTitle,
-    company,
-    location,
-    homeParish,
-    district,
-    state,
-    pin,
+    "highestQualification.degree": degree,
+    "highestQualification.college": college,
+    "highestQualification.passingYear": passingYear,
+    "jobDetails.jobTitle": jobTitle,
+    "jobDetails.company": company,
+    "jobDetails.location": location,
+    "parishInfo.homeParish": homeParish,
+    "parishInfo.district": district,
+    "parishInfo.state": state,
+    "parishInfo.pin": pin,
   } = req.body;
+
+  // Validate required fields
+  if (
+    !firstName ||
+    !lastName ||
+    !phoneNo ||
+    !age ||
+    !gender ||
+    !currentAddress ||
+    !churchContribution ||
+    !degree ||
+    !college ||
+    !passingYear ||
+    !jobTitle ||
+    !company ||
+    !location ||
+    !homeParish ||
+    !district ||
+    !state ||
+    !pin
+  ) {
+    return res.status(400).json({ message: "All fields are required." });
+  }
 
   const session = await mongoose.startSession(); // Start a session for transaction
   session.startTransaction();
