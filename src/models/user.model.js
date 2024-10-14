@@ -34,6 +34,11 @@ const userSchema = mongoose.Schema(
       default: false,
     },
 
+    isDetailsCompelete: {
+      type: Boolean,
+      default: false,
+    },
+
     userDetails: {
       type: mongoose.Types.ObjectId,
       ref: UserDetails,
