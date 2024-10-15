@@ -16,6 +16,8 @@ app.use(
   cors({
     origin: "https://st-marys-church-youth.netlify.app",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"], // Explicitly allow HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"], // Allow necessary headers
   })
 );
 
