@@ -141,13 +141,12 @@ export const refreshAccessToken = async (req, res) => {
           process.env.JWT_ACCESS_TOKEN_SECRET,
           { expiresIn: "15m" }
         );
-        res.cookie("access-token", accessToken),
-          {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "Strict",
-            maxAge: 15 * 60 * 1000,
-          };
+        res.cookie("access-token", accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "Strict",
+          maxAge: 15 * 60 * 1000,
+        });
         res
           .status(201)
           .json({ message: "Access Token refreshed Successfully" });
