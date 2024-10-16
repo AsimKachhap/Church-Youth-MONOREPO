@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema(
       min: [6, " Password should be atleast 6 characters long "],
     },
 
-    pofilePhoto: {
+    profilePhoto: {
       type: String,
       default: "", // Later add a link to default profile photo
     },
@@ -42,6 +42,12 @@ const userSchema = mongoose.Schema(
     isDetailsComplete: {
       type: Boolean,
       default: false,
+    },
+
+    role: {
+      type: String,
+      enum: ["member", "admin", "subadmin"],
+      default: "member",
     },
 
     userDetails: {
