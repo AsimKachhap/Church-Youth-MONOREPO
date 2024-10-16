@@ -93,7 +93,7 @@ export const getMyProfile = async (req, res) => {
 export const addUserDetails = async (req, res) => {
   console.log("Request Body at addUserDetails: ", req.body);
 
-  // Extract flat fields from req.body since FormData does not send nested objects
+  // Extract fields from req.body
   const {
     firstName,
     middleName,
@@ -138,96 +138,88 @@ export const addUserDetails = async (req, res) => {
     return res.status(400).json({ message: "All fields are required." });
   }
 
-  const session = await mongoose.startSession(); // Start a session for transaction
+  const session = await mongoose.startSession(); // Start session for transaction
   session.startTransaction();
 
   try {
+    // Upload image to cloud only if it exists
+    let photoUrl = "";
     if (req.file) {
       const localFilePath = req.file.path;
-
       const uploadResult = await uploadOnCloudinary(localFilePath);
-      const photoUrl = uploadResult.url;
+      photoUrl = uploadResult.url;
 
-      if (photoUrl) {
-        // 1. Create user details in the database
-        const userDetails = await UserDetails.create(
-          [
-            {
-              firstName,
-              middleName,
-              lastName,
-              phoneNo,
-              age: Number(age),
-              gender,
-              photo: photoUrl, // Store the uploaded photo URL
-              currentAddress,
-              highestQualification: {
-                degree,
-                college,
-                passingYear,
-              },
-              jobDetails: {
-                jobTitle,
-                company,
-                location,
-              },
-              parishInfo: {
-                homeParish,
-                district,
-                state,
-                pin,
-              },
-              churchContribution,
-            },
-          ],
-          { session } // Ensure this operation is part of the transaction
-        );
-
-        // 2. Update the User with the new UserDetails reference
-        const updatedUser = await User.findByIdAndUpdate(
-          req.params.id,
-          {
-            userDetails: userDetails[0]._id,
-            isDetailsCompelete: true,
-          },
-          {
-            session,
-            new: true,
-          }
-        );
-
-        if (!updatedUser) {
-          throw new Error("User not found");
-        }
-
-        // Commit the transaction after all operations succeed
-        await session.commitTransaction();
-        session.endSession();
-
-        res.status(201).json({
-          message: "User details saved successfully",
-          data: userDetails,
-        });
-      } else {
-        // Abort the transaction if image upload fails
-        await session.abortTransaction();
-        session.endSession();
-
-        res.status(400).json({
-          message:
-            "Something went wrong while uploading the photo to Cloudinary.",
-        });
+      if (!photoUrl) {
+        throw new Error("Photo upload failed");
       }
     } else {
-      res.status(404).json({ message: "Photo not provided." });
+      return res.status(400).json({ message: "Photo not provided." });
     }
+
+    // Step 1: Create user details in the database
+    const userDetails = await UserDetails.create(
+      [
+        {
+          firstName,
+          middleName,
+          lastName,
+          phoneNo,
+          age: Number(age),
+          gender,
+          profilePhoto: photoUrl,
+          currentAddress,
+          highestQualification: {
+            degree,
+            college,
+            passingYear,
+          },
+          jobDetails: {
+            jobTitle,
+            company,
+            location,
+          },
+          parishInfo: {
+            homeParish,
+            district,
+            state,
+            pin,
+          },
+          churchContribution,
+        },
+      ],
+      { session } // Transaction scope
+    );
+
+    // Step 2: Update User with the new UserDetails reference
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        userDetails: userDetails[0]._id,
+        isDetailsComplete: true,
+      },
+      { session, new: true } // Transaction scope   !!! Read in length about why the new: true option was required. Especially how it helps to maintain the consistency.
+    );
+
+    if (!updatedUser) {
+      throw new Error("User not found");
+    }
+
+    // Commit the transaction after all operations succeed
+    await session.commitTransaction();
+    session.endSession(); // End session
+
+    res.status(201).json({
+      message: "User details saved successfully",
+      data: userDetails,
+    });
   } catch (error) {
-    // Abort the transaction on error
+    // Abort transaction and handle errors
     await session.abortTransaction();
-    session.endSession();
+    session.endSession(); // Ensure session is properly ended
+    console.error("Transaction failed: ", error);
 
     res.status(500).json({
-      message: "Something went wrong on the server.",
+      message: "Something went wrong while processing the request.",
       error: error.message,
     });
   }
