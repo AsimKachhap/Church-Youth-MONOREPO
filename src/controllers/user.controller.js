@@ -157,7 +157,7 @@ export const addUserDetails = async (req, res) => {
     }
 
     // Step 1: Create user details in the database
-    const userDetails = await UserDetails.create(
+    const newUserDetails = await UserDetails.create(
       [
         {
           firstName,
@@ -194,8 +194,9 @@ export const addUserDetails = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       {
-        userDetails: userDetails[0]._id,
+        userDetails: newUserDetails[0]._id,
         isDetailsComplete: true,
+        profilePhoto: newUserDetails.photo,
       },
       { session, new: true } // Transaction scope   !!! Read in length about why the new: true option was required. Especially how it helps to maintain the consistency.
     );
