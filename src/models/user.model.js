@@ -39,7 +39,7 @@ const userSchema = mongoose.Schema(
       default: false,
     },
 
-    isDetailsCompelete: {
+    isDetailsComplete: {
       type: Boolean,
       default: false,
     },
