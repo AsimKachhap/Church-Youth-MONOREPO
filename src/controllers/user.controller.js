@@ -197,7 +197,7 @@ export const addUserDetails = async (req, res) => {
       {
         userDetails: newUserDetails[0]._id,
         isDetailsComplete: true,
-        profilePhoto: newUserDetails.photo,
+        profilePhoto: newUserDetails[0].photo, // !!! WARNING !!! db.create({}) returns an Array
       },
       { session, new: true } // Ensure the updated document is returned
     );
