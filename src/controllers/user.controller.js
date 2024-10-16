@@ -140,6 +140,7 @@ export const addUserDetails = async (req, res) => {
 
   const session = await mongoose.startSession(); // Start session for transaction
   session.startTransaction();
+  let transactionCommitted = false; // Track if the transaction has been committed
 
   try {
     // Upload image to cloud only if it exists
@@ -198,7 +199,7 @@ export const addUserDetails = async (req, res) => {
         isDetailsComplete: true,
         profilePhoto: newUserDetails.photo,
       },
-      { session, new: true } // Transaction scope   !!! Read in length about why the new: true option was required. Especially how it helps to maintain the consistency.
+      { session, new: true } // Ensure the updated document is returned
     );
 
     if (!updatedUser) {
@@ -207,16 +208,19 @@ export const addUserDetails = async (req, res) => {
 
     // Commit the transaction after all operations succeed
     await session.commitTransaction();
+    transactionCommitted = true; // Mark the transaction as committed
     session.endSession(); // End session
 
     res.status(201).json({
       message: "User details saved successfully",
-      data: userDetails,
+      data: newUserDetails,
     });
   } catch (error) {
-    // Abort transaction and handle errors
-    await session.abortTransaction();
-    session.endSession(); // Ensure session is properly ended
+    // Abort the transaction if not yet committed
+    if (!transactionCommitted) {
+      await session.abortTransaction();
+    }
+    session.endSession(); // Ensure the session is properly ended
     console.error("Transaction failed: ", error);
 
     res.status(500).json({
