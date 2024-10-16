@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please give a username"],
       unique: true,
-      min: [3, "Username should be altleast 3 characters long."],
+      minlength: [3, "Username should be altleast 3 characters long."],
       trim: true,
     },
 
@@ -52,7 +52,7 @@ const userSchema = mongoose.Schema(
 
     userDetails: {
       type: mongoose.Types.ObjectId,
-      ref: UserDetails,
+      ref: "UserDetails",
     },
   },
   {

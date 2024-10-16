@@ -166,7 +166,7 @@ export const addUserDetails = async (req, res) => {
           phoneNo,
           age: Number(age),
           gender,
-          profilePhoto: photoUrl,
+          photo: photoUrl,
           currentAddress,
           highestQualification: {
             degree,
