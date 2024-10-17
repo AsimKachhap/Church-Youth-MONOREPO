@@ -8,7 +8,7 @@ export const redis = createClient({
 });
 
 redis.on("error", function (err) {
-  console.log(error);
+  console.log(err);
   throw err;
 });
 await redis.connect();
