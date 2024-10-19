@@ -17,7 +17,8 @@ const userDetailsSchema = mongoose.Schema(
 
     fatherName: {
       type: String,
-      reqired: [true, "Please provide your father's name."],
+      required: [true, "Please provide your father's name."],
+      minLength: [3, "Father Name should be atleast 3 characters long"],
     },
 
     aadhaarNo: {
