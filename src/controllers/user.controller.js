@@ -98,6 +98,7 @@ export const addUserDetails = async (req, res) => {
     firstName,
     middleName,
     lastName,
+    aadhaarNo,
     phoneNo,
     age,
     gender,
@@ -120,6 +121,7 @@ export const addUserDetails = async (req, res) => {
     !firstName ||
     !lastName ||
     !phoneNo ||
+    !aadhaarNo ||
     !age ||
     !gender ||
     !currentAddress ||
@@ -164,6 +166,7 @@ export const addUserDetails = async (req, res) => {
           firstName,
           middleName,
           lastName,
+          aadhaarNo,
           phoneNo,
           age: Number(age),
           gender,
