@@ -14,6 +14,12 @@ const userDetailsSchema = mongoose.Schema(
       type: String,
       required: [true, "Please provide your last name."],
     },
+
+    aadhaarNo: {
+      type: String,
+      required: [true, "Please provide your 12 digit Aadhaar Number."],
+      match: [/^\d{12}$/, "Aadhaar Number must be exactly 12 digits."],
+    },
     phoneNo: {
       type: String,
       required: [true, "Please provide your mobile no."],
