@@ -15,6 +15,11 @@ const userDetailsSchema = mongoose.Schema(
       required: [true, "Please provide your last name."],
     },
 
+    fatherName: {
+      type: String,
+      reqired: [true, "Please provide your father's name."],
+    },
+
     aadhaarNo: {
       type: String,
       required: [true, "Please provide your 12 digit Aadhaar Number."],
