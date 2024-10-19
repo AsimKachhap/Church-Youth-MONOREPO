@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import connectDB from "./utils/db.js";
 
@@ -29,9 +30,13 @@ import userRoute from "./routes/user.route.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users/", userRoute);
-app.get("/", (req, res) => {
-  res.send("<h1>Welcome to Backend</h1>");
-});
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "frontend/dist")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 const PORT = process.env.PORT || 4040;
 app.listen(PORT, () => {
   connectDB();
