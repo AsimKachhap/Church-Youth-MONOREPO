@@ -97,6 +97,7 @@ const userDetailsSchema = mongoose.Schema(
         true,
         "Please describe your contribution or service for the church.",
       ],
+      maxlength: [160, "Itna lamba contribution bhi nahi likhna hai."],
     },
   },
   { timestamps: true }
