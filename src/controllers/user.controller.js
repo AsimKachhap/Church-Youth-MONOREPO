@@ -168,6 +168,7 @@ export const addUserDetails = async (req, res) => {
           firstName,
           middleName,
           lastName,
+          fatherName,
           aadhaarNo,
           phoneNo,
           age: Number(age),
