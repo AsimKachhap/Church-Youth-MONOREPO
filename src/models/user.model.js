@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { UserDetails } from "./userDetails.model.js";
-import { Intro } from "./intro.model.js";
+import Intro from "./intro.model.js";
 
 const userSchema = mongoose.Schema(
   {
