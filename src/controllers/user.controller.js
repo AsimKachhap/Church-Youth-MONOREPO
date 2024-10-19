@@ -98,6 +98,7 @@ export const addUserDetails = async (req, res) => {
     firstName,
     middleName,
     lastName,
+    fatherName,
     aadhaarNo,
     phoneNo,
     age,
@@ -120,6 +121,7 @@ export const addUserDetails = async (req, res) => {
   if (
     !firstName ||
     !lastName ||
+    !fatherName ||
     !phoneNo ||
     !aadhaarNo ||
     !age ||
