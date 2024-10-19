@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { UserDetails } from "./userDetails.model.js";
+import { Intro } from "./intro.model.js";
 
 const userSchema = mongoose.Schema(
   {
@@ -15,6 +16,7 @@ const userSchema = mongoose.Schema(
     email: {
       type: String,
       required: [true, "Please add your email."],
+      unique: true,
       trim: true,
     },
 
@@ -54,7 +56,12 @@ const userSchema = mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "UserDetails",
     },
+    intro: {
+      type: mongoose.Types.ObjectId,
+      ref: "Intro",
+    },
   },
+
   {
     timestamps: true,
   }
